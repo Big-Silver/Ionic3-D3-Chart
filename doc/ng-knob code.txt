@@ -1,0 +1,129 @@
+HTML CODE
+
+<div class="knob">
+	<div class="knobchild" id="ngknob" on-double-click="doNumberPicker()">
+		<ui-knob value="convertedPitTarget" options="knobOptions" subtext="tempRange"></ui-knob>
+
+	</div>
+</div>
+
+
+Angular1 CONTROLLER CODE
+
+$scope.knobOptions = {
+			skin: {
+				//type: 'tron'
+			},
+			startAngle: -150,
+			endAngle: 150,
+			//size: knobSize,
+			size: 300,
+			responsive: true,
+			//size: 250,
+			unit: $scope.config.scale,
+			barWidth: 30,
+			trackWidth: 25,
+			//trackColor: 'rgba(255,0,0,.7)',
+			//trackColor: 'rgba(0,0,0,.1)',
+			//trackColor: 'rgba(250,185,0, 1)',
+			trackColor: 'rgba(56, 56, 56, 1)',
+
+
+			barColor: cookStyle.color, //'rgba(250, 185, 0, 1)', //'#494B52',
+			//bgColor:    'rgba(56, 56, 56, 1)',
+			textColor: '#eee',
+
+			//prevBarColor: 'rgba(0,0,0,.9)',
+			subText: {
+				enabled: true,
+				text: cookStyle.text
+			},
+			scale: {
+				enabled: true,
+				type: 'lines',
+				//width: 3,
+				//color: 'rgba(255,0,0,.5)',
+				color: 'gray',
+				width: 1,
+				//quantity: 20,
+				height: 8
+			},
+			step: 5,
+			max: scaleService.convert(500, $scope.config.scale),
+			min: ($scope.config.scale == 'F' ? 150 : 70),
+			displayPrevious: false,
+			dynamicOptions: true
+			//other options
+		};
+
+
+		$scope.$watch("convertedPitTarget", function (newValue, oldValue) {
+			// Note: the incoming value can be in C, due to the dial display
+
+			// do something
+			console.log("noticed a new temperature " + newValue);
+			//if ($scope.knobOptions.hasOwnProperty('subText')){
+
+			// Internal variable for F converted temp
+			var temp = newValue;
+
+			// Lets convert
+			if ($scope.config.scale != 'F') {
+				temp = newValue * 9 / 5 + 32;
+				console.log('converting back to F: ' + temp);
+			}
+			// Now its in F its safe to assign across
+			$scope.config.pit.target = temp;
+
+			var cookStyle = getCookStyle(temp, 'F');
+
+			//console.debug('updating subtext: ' + cookStyle.text);
+
+
+			$scope.knobOptions = {
+				//'size': knobSize,
+				'subText': {
+					'text': cookStyle.text
+				},
+				'barColor': cookStyle.color
+			};
+
+
+			/*} else {
+			 console.log('didnt find text property' );
+			 console.log($scope.knobOptions);
+			 }
+			 */
+
+		});
+		
+		
+		
+		
+CODE FOR THE SCALE SERVICE
+
+.service('scaleService', function ($filter) {
+		this.convert = function (inputInF, scale) {
+			// Presumes input will be in F !
+			inputInF = inputInF || 32;
+
+			// Ensure actually a number, not text like firebase likes to use
+			inputInF = parseFloat(inputInF);
+
+			// sometimes we'll end up with text
+			if (Number.isNaN(inputInF)) {
+				// Simply return the text
+				return inputInF;
+			}
+
+			// Check the temp scale argument
+			if (scale == 'F') {
+				return $filter('number')(inputInF, 0); // no decimal places
+			}
+			else {
+				//return (5.0/9.0 * (inputInF - 32));
+				return $filter('number')(5.0 / 9.0 * (inputInF - 32), 0); // no decimal places
+			}
+		};
+	})
+

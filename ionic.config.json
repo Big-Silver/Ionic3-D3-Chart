@@ -1,0 +1,12 @@
+{
+  "name": "ionic3",
+  "app_id": "",
+  "type": "ionic-angular",
+  "integrations": {
+    "gulp": {}
+  },
+  "watchPatterns": [],
+  "gulp": {
+    "enabled": false
+  }
+}

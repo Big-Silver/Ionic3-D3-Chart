@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Knob Chart</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div class="knob-rect">
+    <ui-knob [options]="_DHT22KnobHumidityOptions" [(value)]="_DHT22KnobHumidityValue"></ui-knob>
+  </div>
+</ion-content>

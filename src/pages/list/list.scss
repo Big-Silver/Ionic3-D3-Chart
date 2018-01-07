@@ -1,0 +1,14 @@
+page-list {
+  ion-content {
+    text-align: center;
+    .scroll-content {
+      padding: 20px;
+    }
+    ion-input {
+      margin-top: 20px;
+      border: 1px solid #8E8C98;
+      border-radius: 5px;
+      padding-left: 20px;
+    }
+  }
+}
